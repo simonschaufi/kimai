@@ -32,7 +32,7 @@ function export_timeSheetEntry_set_cleared($id, $cleared)
     $database = Kimai_Registry::getDatabase();
     $conn = $database->getConnectionHandler();
 
-    $table = $kga['server_prefix'] . "timeSheet";
+    $table = $kga['server_prefix'] . "time_sheet";
     $values['cleared'] = $cleared ? 1 : 0;
     $filter['timeEntryID'] = MySQL::SQLValue($id, MySQL::SQLVALUE_NUMBER);
     $query = MySQL::BuildSQLUpdate($table, $values, $filter);

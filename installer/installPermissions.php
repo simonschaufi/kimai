@@ -107,12 +107,11 @@ $globalPermissions[] = 'ki_expenses-ownEntry-delete';
 $membershipPermissions[] = 'ki_expenses-otherEntry-ownGroup-delete';
 $globalPermissions[] = 'ki_expenses-otherEntry-otherGroup-delete';
 
-
-$query = buildRoleTableCreateQuery('globalRoles', 'globalRoleID', $globalPermissions);
+$query = buildRoleTableCreateQuery('global_roles', 'global_role_id', $globalPermissions);
 exec_query($query);
 
 // global admin role
-$query = buildRoleInsertQuery('globalRoles', 'Admin', $globalPermissions, $globalPermissions);
+$query = buildRoleInsertQuery('global_roles', 'Admin', $globalPermissions, $globalPermissions);
 exec_query($query);
 
 $connection = $database->getConnectionHandler();
@@ -120,48 +119,46 @@ $globalAdminRoleID = $connection->GetLastInsertID();
 
 // global user role
 $allowedPermissions = array(
-  'ki_budget-access',
-  'ki_expenses-access',
-  'ki_export-access',
-  'ki_invoice-access',
-  'ki_timesheet-access',
-  'ki_timesheets-showRates',
-  'ki_timesheets-ownEntry-add',
-  'ki_timesheets-ownEntry-edit',
-  'ki_timesheets-ownEntry-delete',
-  'ki_expenses-ownEntry-add',
-  'ki_expenses-ownEntry-edit',
-  'ki_expenses-ownEntry-delete',
+    'ki_budget-access',
+    'ki_expenses-access',
+    'ki_export-access',
+    'ki_invoice-access',
+    'ki_timesheet-access',
+    'ki_timesheets-showRates',
+    'ki_timesheets-ownEntry-add',
+    'ki_timesheets-ownEntry-edit',
+    'ki_timesheets-ownEntry-delete',
+    'ki_expenses-ownEntry-add',
+    'ki_expenses-ownEntry-edit',
+    'ki_expenses-ownEntry-delete',
 );
-$query = buildRoleInsertQuery('globalRoles', 'User', $allowedPermissions, $globalPermissions);
+$query = buildRoleInsertQuery('global_roles', 'User', $allowedPermissions, $globalPermissions);
 exec_query($query);
 $globalUserRoleID = $connection->GetLastInsertID();
 
-
-
-$query = buildRoleTableCreateQuery('membershipRoles', 'membershipRoleID', $membershipPermissions);
+$query = buildRoleTableCreateQuery('membership_roles', 'membership_role_id', $membershipPermissions);
 exec_query($query);
 
 // membership admin role
-$query = buildRoleInsertQuery('membershipRoles', 'Admin', $membershipPermissions, $membershipPermissions);
+$query = buildRoleInsertQuery('membership_roles', 'Admin', $membershipPermissions, $membershipPermissions);
 exec_query($query);
 $membershipAdminRoleID = $connection->GetLastInsertID();
 
 // membership user role
 $allowedPermissions = array();
-$query = buildRoleInsertQuery('membershipRoles', 'User', $allowedPermissions, $membershipPermissions);
+$query = buildRoleInsertQuery('membership_roles', 'User', $allowedPermissions, $membershipPermissions);
 exec_query($query);
 $membershipUserRoleID = $connection->GetLastInsertID();
 
 // membership groupleader role
 $allowedPermissions = array_merge($allowedPermissions, array(
-  'ki_timesheets-otherEntry-ownGroup-add',
-  'ki_timesheets-otherEntry-ownGroup-edit',
-  'ki_timesheets-otherEntry-ownGroup-delete',
-  'ki_expenses-otherEntry-ownGroup-add',
-  'ki_expenses-otherEntry-ownGroup-edit',
-  'ki_expenses-otherEntry-ownGroup-delete',
+    'ki_timesheets-otherEntry-ownGroup-add',
+    'ki_timesheets-otherEntry-ownGroup-edit',
+    'ki_timesheets-otherEntry-ownGroup-delete',
+    'ki_expenses-otherEntry-ownGroup-add',
+    'ki_expenses-otherEntry-ownGroup-edit',
+    'ki_expenses-otherEntry-ownGroup-delete',
 ));
-$query = buildRoleInsertQuery('membershipRoles', 'Groupleader', $allowedPermissions, $membershipPermissions);
+$query = buildRoleInsertQuery('membership_roles', 'Groupleader', $allowedPermissions, $membershipPermissions);
 exec_query($query);
 $membershipGroupleaderRoleID = $connection->GetLastInsertID();

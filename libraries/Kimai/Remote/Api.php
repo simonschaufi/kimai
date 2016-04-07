@@ -335,7 +335,6 @@ class Kimai_Remote_Api
             return $this->getAuthErrorResult();
         }
 
-        $tasks = array();
         $kga = $this->getKimaiEnv();
         $user = $this->getUser();
 
@@ -389,7 +388,7 @@ class Kimai_Remote_Api
         $result = $this->getBackend()->timeSheet_get_data($result[0]);
 
         // do not expose all values, but only the public visible ones
-        $keys = array('timeEntryID', 'activityID', 'projectID', 'start', 'end', 'duration');
+        $keys = array('timeEntryID', 'activity_id', 'project_id', 'start', 'end', 'duration');
         $current = array();
         foreach ($keys as $key) {
             if (array_key_exists($key, $result)) {

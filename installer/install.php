@@ -69,39 +69,39 @@ $errors = false;
 $p = $kga['server_prefix'];
 
 $query = "CREATE TABLE `${p}users` (
-  `userID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(160) NOT NULL,
   `alias` varchar(160),
   `trash` tinyint(1) NOT NULL default '0',
   `active` tinyint(1) NOT NULL default '1',
   `mail` varchar(160) DEFAULT NULL,
   `password` varchar(254) NULL DEFAULT NULL,
-  `passwordResetHash` char(32) NULL DEFAULT NULL,
+  `password_reset_hash` char(32) NULL DEFAULT NULL,
   `ban` int(1) NOT NULL default '0',
   `banTime` int(10) NOT NULL default '0',
   `secure` varchar(60) NOT NULL default '0',
-  `lastProject` int(10) NOT NULL default '1',
-  `lastActivity` int(10) NOT NULL default '1',
-  `lastRecord` int(10) NOT NULL default '0',
-  `timeframeBegin` varchar(60) NOT NULL default '0',
-  `timeframeEnd` varchar(60) NOT NULL default '0',
+  `last_project` int(10) NOT NULL default '1',
+  `last_activity` int(10) NOT NULL default '1',
+  `last_record` int(10) NOT NULL default '0',
+  `timeframe_begin` varchar(60) NOT NULL default '0',
+  `timeframe_end` varchar(60) NOT NULL default '0',
   `apikey` varchar(30) NULL DEFAULT NULL,
-  `globalRoleID` int(10) NOT NULL,
+  `global_role_id` int(10) NOT NULL,
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `apikey` (`apikey`)
 );";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}preferences` (
-  `userID` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
   `option` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
-  PRIMARY KEY (`userID`,`option`)
+  PRIMARY KEY (`user_id`,`option`)
 );";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}activities` (
-  `activityID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `activity_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL,
   `comment` TEXT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT '1',
@@ -111,56 +111,56 @@ $query = "CREATE TABLE `${p}activities` (
 exec_query($query);
 
 $query = "CREATE TABLE `${p}groups` (
-  `groupID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `group_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(160) NOT NULL,
   `trash` TINYINT(1) NOT NULL DEFAULT '0'
 ) AUTO_INCREMENT=1;";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}groups_users` (
-  `groupID` int(10) NOT NULL,
-  `userID` int(10) NOT NULL,
-  `membershipRoleID` int(10) NOT NULL,
-  PRIMARY KEY (`groupID`,`userID`)
+  `group_id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `membership_role_id` int(10) NOT NULL,
+  PRIMARY KEY (`group_id`,`user_id`)
 ) AUTO_INCREMENT=1;";
 exec_query($query);
 
 // group/customer cross-table (groups n:m customers)
 $query = "CREATE TABLE `${p}groups_customers` (
-  `groupID` INT NOT NULL,
-  `customerID` INT NOT NULL,
-  UNIQUE (`groupID` ,`customerID`));";
+  `group_id` INT NOT NULL,
+  `customer_id` INT NOT NULL,
+  UNIQUE (`group_id` ,`customer_id`));";
 exec_query($query);
 
 // group/project cross-table (groups n:m projects)
 $query = "CREATE TABLE `${p}groups_projects` (
-  `groupID` INT NOT NULL,
-  `projectID` INT NOT NULL,
-  UNIQUE (`groupID` ,`projectID`));";
+  `group_id` INT NOT NULL,
+  `project_id` INT NOT NULL,
+  UNIQUE (`group_id` ,`project_id`));";
 exec_query($query);
 
 // group/event cross-table (groups n:m events)
 $query = "CREATE TABLE `${p}groups_activities` (
-  `groupID` INT NOT NULL,
-  `activityID` INT NOT NULL,
-  UNIQUE (`groupID` ,`activityID`));";
+  `group_id` INT NOT NULL,
+  `activity_id` INT NOT NULL,
+  UNIQUE (`group_id` ,`activity_id`));";
 exec_query($query);
 
 // project/event cross-table (projects n:m events)
 $query = "CREATE TABLE `${p}projects_activities` (
-  `projectID` INT NOT NULL,
-  `activityID` INT NOT NULL,
+  `project_id` INT NOT NULL,
+  `activity_id` INT NOT NULL,
   `budget` DECIMAL( 10, 2 ) NULL DEFAULT '0.00',
   `effort` DECIMAL( 10, 2 ) NULL ,
   `approved` DECIMAL( 10, 2 ) NULL,
-  UNIQUE (`projectID` ,`activityID`));";
+  UNIQUE (`project_id`, `activity_id`));";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}customers` (
-  `customerID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `customer_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL,
   `password` varchar(255),
-  `passwordResetHash` char(32) NULL DEFAULT NULL,
+  `password_reset_hash` char(32) NULL DEFAULT NULL,
   `secure` varchar(60) NOT NULL default '0',
   `comment` TEXT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT '1',
@@ -183,8 +183,8 @@ $query = "CREATE TABLE `${p}customers` (
 exec_query($query);
 
 $query = "CREATE TABLE `${p}projects` (
-  `projectID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `customerID` int(3) NOT NULL,
+  `project_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `customer_id` int(3) NOT NULL,
   `name` varchar(255) NOT NULL,
   `comment` TEXT NULL,
   `visible` TINYINT(1) NOT NULL DEFAULT '1',
@@ -194,33 +194,33 @@ $query = "CREATE TABLE `${p}projects` (
   `effort` DECIMAL( 10, 2 ) NULL,
   `approved` DECIMAL( 10, 2 ) NULL,
   `internal` TINYINT( 1 ) NOT NULL DEFAULT 0,
-  INDEX ( `customerID` )
+  INDEX ( `customer_id` )
 ) AUTO_INCREMENT=1;";
 exec_query($query);
 
-$query = "CREATE TABLE `${p}timeSheet` (
-  `timeEntryID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+$query = "CREATE TABLE `${p}time_sheet` (
+  `time_entry_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `start` int(10) NOT NULL default '0',
   `end` int(10) NOT NULL default '0',
   `duration` int(6) NOT NULL default '0',
-  `userID` int(10) NOT NULL,
-  `projectID` int(10) NOT NULL,
-  `activityID` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `project_id` int(10) NOT NULL,
+  `activity_id` int(10) NOT NULL,
   `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
   `comment` TEXT NULL DEFAULT NULL,
-  `commentType` TINYINT(1) NOT NULL DEFAULT '0',
+  `comment_type` TINYINT(1) NOT NULL DEFAULT '0',
   `cleared` TINYINT(1) NOT NULL DEFAULT '0',
   `location` VARCHAR(50),
-  `trackingNumber` varchar(30),
+  `tracking_number` varchar(30),
   `rate` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0',
-  `fixedRate` DECIMAL( 10, 2 ) DEFAULT NULL,
+  `fixed_rate` DECIMAL( 10, 2 ) DEFAULT NULL,
   `budget` DECIMAL( 10, 2 ) NULL,
   `approved` DECIMAL( 10, 2 ) NULL,
-  `statusID` SMALLINT NOT NULL,
+  `status_id` SMALLINT NOT NULL,
   `billable` TINYINT NULL,
-  INDEX ( `userID` ),
-  INDEX ( `projectID` ),
-  INDEX ( `activityID` )
+  INDEX ( `user_id` ),
+  INDEX ( `project_id` ),
+  INDEX ( `activity_id` )
 ) AUTO_INCREMENT=1;";
 exec_query($query);
 
@@ -232,41 +232,41 @@ $query = "CREATE TABLE `${p}configuration` (
 exec_query($query);
 
 $query = "CREATE TABLE `${p}rates` (
-  `userID` int(10) DEFAULT NULL,
-  `projectID` int(10) DEFAULT NULL,
-  `activityID` int(10) DEFAULT NULL,
+  `user_id` int(10) DEFAULT NULL,
+  `project_id` int(10) DEFAULT NULL,
+  `activity_id` int(10) DEFAULT NULL,
   `rate` decimal(10,2) NOT NULL,
-  UNIQUE KEY(`userID`, `projectID`, `activityID`)
+  UNIQUE KEY(`user_id`, `project_id`, `activity_id`)
 );";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}fixedRates` (
-  `projectID` int(10) DEFAULT NULL,
-  `activityID` int(10) DEFAULT NULL,
+  `project_id` int(10) DEFAULT NULL,
+  `activity_id` int(10) DEFAULT NULL,
   `rate` decimal(10,2) NOT NULL,
-  UNIQUE KEY(`projectID`, `activityID`)
+  UNIQUE KEY(`project_id`, `activity_id`)
 );";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}expenses` (
   `expenseID` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `timestamp` int(10) NOT NULL DEFAULT '0',
-  `userID` int(10) NOT NULL,
-  `projectID` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `project_id` int(10) NOT NULL,
   `designation` text NOT NULL,
   `comment` text NULL,
-  `commentType` tinyint(1) NOT NULL DEFAULT '0',
+  `comment_type` tinyint(1) NOT NULL DEFAULT '0',
   `refundable` tinyint(1) unsigned NOT NULL default '0',
   `cleared` tinyint(1) NOT NULL DEFAULT '0',
   `multiplier` decimal(10,2) NOT NULL DEFAULT '1.00',
   `value` decimal(10,2) NOT NULL DEFAULT '0.00',
-  INDEX ( `userID` ),
-  INDEX ( `projectID` )
+  INDEX ( `user_id` ),
+  INDEX ( `project_id` )
 ) AUTO_INCREMENT=1;";
 exec_query($query);
 
 $query = "CREATE TABLE `${p}statuses` (
-`statusID` TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`status_id` TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 `status` VARCHAR( 200 ) NOT NULL
 ) ENGINE = InnoDB";
 exec_query($query);
@@ -276,11 +276,11 @@ exec_query($query);
 require("installPermissions.php");
 
 foreach (array('customer', 'project', 'activity', 'group', 'user') as $object) {
-    exec_query("ALTER TABLE `${p}globalRoles` ADD `core-$object-otherGroup-view` tinyint DEFAULT 0;");
-    exec_query("UPDATE `${p}globalRoles` SET `core-$object-otherGroup-view` = 1 WHERE `name` = 'Admin';");
+    exec_query("ALTER TABLE `${p}global_roles` ADD `core-$object-otherGroup-view` tinyint DEFAULT 0;");
+    exec_query("UPDATE `${p}global_roles` SET `core-$object-otherGroup-view` = 1 WHERE `name` = 'Admin';");
 }
 
-exec_query("INSERT INTO `${p}statuses` (`statusID` ,`status`) VALUES ('1', 'open'), ('2', 'review'), ('3', 'closed');");
+exec_query("INSERT INTO `${p}statuses` (`status_id` ,`status`) VALUES ('1', 'open'), ('2', 'review'), ('3', 'closed');");
 
 // GROUPS
 $defaultGroup = $kga['lang']['defaultGroup'];
@@ -288,22 +288,22 @@ $query = "INSERT INTO `${p}groups` (`name`) VALUES ('admin');";
 exec_query($query);
 
 // MISC
-$query = "INSERT INTO `${p}activities` (`activityID`, `name`, `comment`) VALUES (1, '" . $kga['lang']['testActivity'] . "', '');";
+$query = "INSERT INTO `${p}activities` (`activity_id`, `name`, `comment`) VALUES (1, '" . $kga['lang']['testActivity'] . "', '');";
 exec_query($query);
 
-$query = "INSERT INTO `${p}customers` (`customerID`, `name`, `comment`, `company`, `vat`, `contact`, `street`, `zipcode`, `city`, `phone`, `fax`, `mobile`, `mail`, `homepage`, `timezone`) VALUES (1, '" . $kga['lang']['testCustomer'] . "', '', '', '', '', '', '', '', '', '', '', '',''," . quoteForSql($_REQUEST['timezone']) . ");";
+$query = "INSERT INTO `${p}customers` (`customer_id`, `name`, `comment`, `company`, `vat`, `contact`, `street`, `zipcode`, `city`, `phone`, `fax`, `mobile`, `mail`, `homepage`, `timezone`) VALUES (1, '" . $kga['lang']['testCustomer'] . "', '', '', '', '', '', '', '', '', '', '', '',''," . quoteForSql($_REQUEST['timezone']) . ");";
 exec_query($query);
 
-$query = "INSERT INTO `${p}projects` (`projectID`, `customerID`, `name`, `comment`) VALUES (1, 1, '" . $kga['lang']['testProject'] . "', '');";
+$query = "INSERT INTO `${p}projects` (`project_id`, `customer_id`, `name`, `comment`) VALUES (1, 1, '" . $kga['lang']['testProject'] . "', '');";
 exec_query($query);
 
 
 // ADMIN USER
 $adminPassword = encode_password('changeme');
-$query = "INSERT INTO `${p}users` (`userID`,`name`,`mail`,`password`, `globalRoleID` ) VALUES ('$randomAdminID','admin','admin@example.com','$adminPassword',1);";
+$query = "INSERT INTO `${p}users` (`user_id`, `name`, `mail`, `password`, `globalRoleID` ) VALUES ('$randomAdminID','admin','admin@example.com','$adminPassword',1);";
 exec_query($query);
 
-$query = "INSERT INTO `${p}preferences` (`userID`,`option`,`value`) VALUES
+$query = "INSERT INTO `${p}preferences` (`user_id`,`option`,`value`) VALUES
 ('$randomAdminID', 'ui.rowlimit', '100'),
 ('$randomAdminID', 'ui.skin', 'standard'),
 ('$randomAdminID', 'ui.showCommentsByDefault', '0'),
@@ -351,16 +351,16 @@ exec_query("INSERT INTO `${p}configuration` (`option`, `value`) VALUES
 ");
 
 // CROSS TABLES
-$query = "INSERT INTO `${p}groups_users` (`groupID`, `userID`, `membershipRoleID`) VALUES (1, '" . $randomAdminID . "', 1);";
+$query = "INSERT INTO `${p}groups_users` (`group_id`, `user_id`, `membership_role_id`) VALUES (1, '" . $randomAdminID . "', 1);";
 exec_query($query);
 
-$query = "INSERT INTO `${p}groups_activities` (`groupID`, `activityID`) VALUES (1, 1);";
+$query = "INSERT INTO `${p}groups_activities` (`group_id`, `activity_id`) VALUES (1, 1);";
 exec_query($query);
 
-$query = "INSERT INTO `${p}groups_customers` (`groupID`, `customerID`) VALUES (1, 1);";
+$query = "INSERT INTO `${p}groups_customers` (`group_id`, `customer_id`) VALUES (1, 1);";
 exec_query($query);
 
-$query = "INSERT INTO `${p}groups_projects` (`groupID`, `projectID`) VALUES (1, 1);";
+$query = "INSERT INTO `${p}groups_projects` (`group_id`, `project_id`) VALUES (1, 1);";
 exec_query($query);
 
 if ($errors) {

@@ -42,22 +42,22 @@ class Kimai_Database_Mysql
      * Instantiate a new database layer.
      * The provided kimai global array will be stored as a reference.
      *
-     * @param Kimai_Config $kga
+     * @param array $connectionParams
      * @param bool $autoConnect
      */
-    public function __construct(&$kga, $autoConnect = true)
+    public function __construct($connectionParams, $autoConnect = true)
     {
-        $this->kga = &$kga;
+        $this->kga = Kimai_Registry::getConfig();
         if ($autoConnect) {
             $useUtf8 = false;
-            if ($kga['server_charset'] === 'utf8') {
+            if ($connectionParams['charset'] === 'utf8') {
                 $useUtf8 = true;
             }
             $this->connect(
-                $kga['server_hostname'],
-                $kga['server_database'],
-                $kga['server_username'],
-                $kga['server_password'],
+                $connectionParams['host'],
+                $connectionParams['database'],
+                $connectionParams['username'],
+                $connectionParams['password'],
                 $useUtf8
             );
         }
@@ -2846,7 +2846,7 @@ class Kimai_Database_Mysql
             }
         }
 
-        $this->kga['timezone'] = $this->kga['defaultTimezone'];
+        $this->kga['timezone'] = $GLOBALS['KIMAI_CONF_VARS']['SYS']['phpTimeZone'];
 
         // and add user or customer specific settings on top
         if (strncmp($kimai_user, 'customer_', 9) == 0) {
@@ -3051,22 +3051,24 @@ class Kimai_Database_Mysql
         $filter['userID'] = MySQL::SQLValue($userID, MySQL::SQLVALUE_NUMBER);
 
         // get values from user record
-        $columns[] = "userID";
-        $columns[] = "name";
-        $columns[] = "trash";
-        $columns[] = "active";
-        $columns[] = "mail";
-        $columns[] = "password";
-        $columns[] = "ban";
-        $columns[] = "banTime";
-        $columns[] = "secure";
-        $columns[] = "lastProject";
-        $columns[] = "lastActivity";
-        $columns[] = "lastRecord";
-        $columns[] = "timeframeBegin";
-        $columns[] = "timeframeEnd";
-        $columns[] = "apikey";
-        $columns[] = "globalRoleID";
+        $columns = array(
+            "userID",
+            "name",
+            "trash",
+            "active",
+            "mail",
+            "password",
+            "ban",
+            "banTime",
+            "secure",
+            "lastProject",
+            "lastActivity",
+            "lastRecord",
+            "timeframeBegin",
+            "timeframeEnd",
+            "apikey",
+            "globalRoleID"
+        );
 
         $this->conn->SelectRows($table, $filter, $columns);
         return $this->conn->RowArray(0, MYSQLI_ASSOC);
@@ -3084,24 +3086,26 @@ class Kimai_Database_Mysql
         $filter['customerID'] = MySQL::SQLValue($userID, MySQL::SQLVALUE_NUMBER);
 
         // get values from user record
-        $columns[] = "customerID";
-        $columns[] = "name";
-        $columns[] = "comment";
-        $columns[] = "visible";
-        $columns[] = "filter";
-        $columns[] = "company";
-        $columns[] = "street";
-        $columns[] = "zipcode";
-        $columns[] = "city";
-        $columns[] = "phone";
-        $columns[] = "fax";
-        $columns[] = "mobile";
-        $columns[] = "mail";
-        $columns[] = "homepage";
-        $columns[] = "trash";
-        $columns[] = "password";
-        $columns[] = "secure";
-        $columns[] = "timezone";
+        $columns = array(
+            "customerID",
+            "name",
+            "comment",
+            "visible",
+            "filter",
+            "company",
+            "street",
+            "zipcode",
+            "city",
+            "phone",
+            "fax",
+            "mobile",
+            "mail",
+            "homepage",
+            "trash",
+            "password",
+            "secure",
+            "timezone"
+        );
 
         $this->conn->SelectRows($table, $filter, $columns);
         return $this->conn->RowArray(0, MYSQLI_ASSOC);

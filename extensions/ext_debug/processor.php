@@ -17,9 +17,11 @@
  * along with Kimai; If not, see <http://www.gnu.org/licenses/>.
  */
 
-// ===================
-// = DEBUG PROCESSOR =
-// ===================
+// Set up the application for the extension
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../../libraries/autoload.php';
+    (new Kimai_Extension_Application($classLoader))->run();
+});
 
 $isCoreProcessor = 0;
 $dir_templates = 'templates/';
@@ -96,11 +98,6 @@ switch ($axAction) {
 
         $output = $kga;
         $filter = array(
-            'server_hostname' => "xxx",
-            'server_database' => "xxx",
-            'server_username' => "xxx",
-            'server_password' => "xxx",
-            'password_salt' => "xxx",
             'user' => array(
                 'secure' => "xxx",
                 'userID' => "xxx",
@@ -110,7 +107,7 @@ switch ($axAction) {
             ),
         );
 
-        switch ($axValue) {
+        switch($axValue) {
             case 'plain':
                 $output = $kga;
                 $output['conf'] = '## HIDDEN ##';

@@ -26,6 +26,13 @@
  * some HTML will be returned, which will then be shown in a floater.
  */
 
+// Set up the application for the backend
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../libraries/autoload.php';
+    (new Kimai_Backend_Application($classLoader))->run();
+});
+
+// insert KSPI
 $isCoreProcessor = 1;
 $dir_templates = "templates/scripts/"; // folder of the template files
 require "../includes/kspi.php";

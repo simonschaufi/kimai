@@ -17,9 +17,11 @@
  * along with Kimai; If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Export Processor.
- */
+// Set up the application for the extension
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../../libraries/autoload.php';
+    (new Kimai_Extension_Application($classLoader))->run();
+});
 
 $isCoreProcessor = 0;
 $dir_templates = 'templates/';
@@ -27,7 +29,6 @@ require('../../includes/kspi.php');
 require('private_func.php');
 
 $database = Kimai_Registry::getDatabase();
-
 
 // ============================
 // = parse general parameters =

@@ -20,6 +20,13 @@
 // ==================================
 // = implementing standard includes =
 // ==================================
+
+// Set up the application for the extension
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../../libraries/autoload.php';
+    (new Kimai_Extension_Application($classLoader))->run();
+});
+
 include('../../includes/basics.php');
 
 $database = Kimai_Registry::getDatabase();
@@ -128,7 +135,7 @@ $view->assign('inlineEditingOfDescriptions', $inlineEditingOfDescriptions);
 $view->assign('showRates', isset($kga['user']) && $database->global_role_allows($kga['user']['globalRoleID'], 'ki_timesheets-showRates'));
 
 $defaults = array(
-    'table_time_format' => $kga['conf']['table_time_format']
+    'table_time_format' => $kga['table_time_format'],
 );
 $prefs = $database->user_get_preferences_by_prefix('ui.');
 $view->assign('prefs', array_merge($defaults, $prefs));

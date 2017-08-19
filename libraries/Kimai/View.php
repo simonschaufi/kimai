@@ -24,6 +24,11 @@
  */
 class Kimai_View extends Zend_View
 {
+    /**
+     * @var Kimai_Config
+     */
+    public $kga;
+
     public function init()
     {
         $this->setBasePath(APPLICATION_PATH . '/templates/');

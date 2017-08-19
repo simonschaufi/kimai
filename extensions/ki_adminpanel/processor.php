@@ -17,6 +17,12 @@
  * along with Kimai; If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Set up the application for the extension
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../../libraries/autoload.php';
+    (new Kimai_Extension_Application($classLoader))->run();
+});
+
 $isCoreProcessor = 0;
 $dir_templates = 'templates/';
 require '../../includes/kspi.php';
@@ -453,7 +459,7 @@ switch ($axAction)
             $config_data['date_format_2'] = $_REQUEST['date_format_2'];
             $config_data['date_format_3'] = $_REQUEST['date_format_3'];
             $config_data['table_time_format'] = $_REQUEST['table_time_format'];
-            $config_data['language'] = $_REQUEST['language'];
+            #$config_data['language'] = $_REQUEST['language'];
             if (isset($_REQUEST['status']) && is_array($_REQUEST['status'])) {
                 $config_data['status'] = implode(',', $_REQUEST['status']);
             }
@@ -484,17 +490,27 @@ switch ($axAction)
         }
 
         if (count($errors) == 0) {
-            write_config_file(
-                $kga['server_database'],
-                $kga['server_hostname'],
-                $kga['server_username'],
-                $kga['server_password'],
-                $kga['server_charset'],
-                $kga['server_prefix'],
-                $_REQUEST['language'],
-                $kga['password_salt'],
-                $_REQUEST['defaultTimezone']
-            );
+            $postValues = $_POST['config'];
+
+            $statusObjects = [];
+            if (isset($postValues['values']) && is_array($postValues['values'])) {
+                $configurationPathValuePairs = array();
+                $formValues = $postValues['values'];
+                foreach ($formValues as $section => $valueArray) {
+                    if (is_array($GLOBALS['KIMAI_CONF_VARS'][$section])) {
+                        foreach ($valueArray as $valueKey => $value) {
+                            $oldValue = $GLOBALS['KIMAI_CONF_VARS'][$section][$valueKey];
+
+                            $configurationPathValuePairs[$section . '/' . $valueKey] = $value;
+                            $statusObjects[] = true;
+                        }
+                    }
+                }
+                if (!empty($statusObjects)) {
+                    $configurationManager = new Kimai_Config_ConfigurationManager();
+                    $configurationManager->setLocalConfigurationValuesByPathValuePairs($configurationPathValuePairs);
+                }
+            }
         }
 
         header('Content-Type: application/json;charset=utf-8');

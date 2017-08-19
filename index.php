@@ -22,7 +22,11 @@
  * will be redirected to core/kimai.php.
  */
 
-ob_start();
+// Set up the application for the Frontend
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/libraries/autoload.php';
+    (new Kimai_Frontend_Application($classLoader))->run();
+});
 
 require_once 'includes/basics.php';
 

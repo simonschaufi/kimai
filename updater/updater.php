@@ -21,6 +21,12 @@
  * This script performs updates of the database from any version to the current version.
  */
 
+// Set up the application for the backend
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../libraries/autoload.php';
+    (new Kimai_Backend_Application($classLoader))->run();
+});
+
 require_once 'functions.php';
 
 define('KIMAI_UPDATER_RUNNING', true);
@@ -1182,6 +1188,36 @@ if ((int)$revisionDB < 1394) {
     exec_query("ALTER TABLE `${p}configuration` CHANGE `option` `option` VARCHAR(190) NULL");
 }
 
+if ((int)$revisionDB < 1395) {
+    Kimai_Logger::logfile("-- update to r1395");
+
+    $success = write_config_file(
+        $kga['server_database'],
+        $kga['server_hostname'],
+        $kga['server_username'],
+        $kga['server_password'],
+        $kga['server_charset'],
+        $kga['server_prefix'],
+        $kga['language'],
+        $kga['password_salt'],
+        $kga['defaultTimezone']
+    );
+
+    if ($success) {
+        $level = 'green';
+        $additional = 'charset: ' . $charset;
+    } else {
+        $level = 'red';
+        $additional = 'Unable to write config file.';
+    }
+
+    printLine($level, 'Store charset in configuration file <i>autoconf.php</i>.', $additional);
+}
+
+if ((int)$revisionDB < 1396) {
+    Kimai_Logger::logfile("-- update to r1396");
+    exec_query("DELETE FROM `${p}configuration` WHERE `option` = 'language'");
+}
 // ================================================================================
 // FINALIZATION: update DB version number
 // ================================================================================

@@ -148,7 +148,7 @@
                     </li>
                     <li>
                         <label for="table_time_format"></label>
-                        <?php echo $this->kga['lang']['table_time_format']?>:
+                        <?php echo $this->translate('table_time_format'); ?>:
                         <?php echo $this->formText('table_time_format', $this->prefs['table_time_format'], array('size' => 20)); ?>
                     </li>
                 </ul>

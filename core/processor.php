@@ -27,6 +27,12 @@
  * of customers.
  */
 
+// Set up the application for the backend
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../libraries/autoload.php';
+    (new Kimai_Backend_Application($classLoader))->run();
+});
+
 $isCoreProcessor = 1;
 $dir_templates = 'templates/core/';
 require('../includes/kspi.php');

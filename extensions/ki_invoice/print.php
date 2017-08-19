@@ -17,6 +17,12 @@
  * along with Kimai; If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Set up the application for the extension
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../../libraries/autoload.php';
+    (new Kimai_Extension_Application($classLoader))->run();
+});
+
 include_once '../../includes/basics.php';
 require_once 'private_func.php';
 
@@ -107,10 +113,8 @@ while (list($id, $fd) = each($invoiceArray)) {
 $fttltime = Kimai_Format::formatDuration($ttltime * 3600);
 
 // sort invoice entries
-if (isset($_REQUEST['sort_invoice']))
-{
-    switch($_REQUEST['sort_invoice'])
-    {
+if (isset($_REQUEST['sort_invoice'])) {
+    switch ($_REQUEST['sort_invoice']) {
         case 'date_asc':
             uasort($invoiceArray, 'ext_invoice_sort_by_date_asc');
             break;

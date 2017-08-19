@@ -31,86 +31,47 @@ set_include_path(
         PATH_SEPARATOR,
         array(
             '.',
-            realpath(APPLICATION_PATH . 'libraries/'),
+            realpath(APPLICATION_PATH . '/libraries/'),
+            realpath(APPLICATION_PATH . '/libraries/zendframework/zendframework1/library/')
         )
     )
 );
 
-if (!file_exists(WEBROOT . '/includes/autoconf.php')) {
-    header('Location: installer/index.php');
-    exit;
-}
-
-ini_set('display_errors', '0');
+ini_set('display_errors', '1');
 
 require_once WEBROOT . '/libraries/autoload.php';
 require_once WEBROOT . '/includes/func.php';
 
-// The $kga (formerly Kimai Global Array) is initialized here
-// It was replaced by an proxy object, but until refactored it is still used as array in a lot of places
-require_once WEBROOT . '/includes/autoconf.php';
 $kga = new Kimai_Config(array(
-    'server_prefix' => $server_prefix,
-    'server_hostname' => $server_hostname,
-    'server_database' => $server_database,
-    'server_username' => $server_username,
-    'server_password' => $server_password,
-    'server_charset' => $server_charset,
-    'defaultTimezone' => $defaultTimezone,
-    'password_salt' => isset($password_salt) ? $password_salt : ''
+    'server_prefix' => $GLOBALS['KIMAI_CONF_VARS']['DB']['prefix'],
+    'authenticator' => $GLOBALS['KIMAI_CONF_VARS']['SYS']['authenticator'],
+    'language' => $GLOBALS['KIMAI_CONF_VARS']['UI']['language'],
+    'skin' => $GLOBALS['KIMAI_CONF_VARS']['UI']['skin']
 ));
 
-// will inject the version variables into the Kimai_Config object
-require WEBROOT . '/includes/version.php';
-
 // write vars from autoconf.php into kga
-if (isset($language)) {
-    $kga->setLanguage($language);
-}
-if (isset($authenticator)) {
-    $kga->setAuthenticator($authenticator);
-}
 if (isset($billable)) {
     $kga->setBillable($billable);
 }
-if (isset($skin)) {
-    $kga->setSkin($skin);
-}
 
-date_default_timezone_set($defaultTimezone);
+// will inject the version variables into the Kimai_Config object
+include WEBROOT . 'includes/version.php';
 
 Kimai_Registry::setConfig($kga);
 
 // ============ global namespace cleanup ============
 // remove some variables from the global namespace, that should either be
 // not accessible or which are available through the kga config object
-$cleanup = array(
-    'server_prefix',
-    'server_hostname',
-    'server_database',
-    'server_username',
-    'server_password',
-    'server_charset',
-    'language',
-    'password_salt',
-    'authenticator',
-    'defaultTimezone',
-    'billable',
-    'skin'
-);
-
-foreach ($cleanup as $varName) {
+foreach (array('billable') as $varName) {
     if (isset($$varName)) {
         unset($$varName);
     }
 }
 
-unset($cleanup);
-
 // ============ setup database ============
 // we do not unset the $database variable
 // as it is historically referenced in many places from the global namespace
-$database = new Kimai_Database_Mysql($kga, true);
+$database = new Kimai_Database_Mysql($GLOBALS['KIMAI_CONF_VARS']['DB'], true);
 if (!$database->isConnected()) {
     die('Kimai could not connect to database. Check your autoconf.php.');
 }
@@ -129,13 +90,11 @@ unset($authPlugin);
 $database->initializeConfig($kga);
 
 // ============ setup translation object ============
-$service = new Kimai_Translation_Service();
 Kimai_Registry::setTranslation(
-    $service->load(
+    (new Kimai_Translation_Service())->load(
         $kga->getLanguage()
     )
 );
-unset($service);
 
 $tmpDir = WEBROOT . '/temporary/';
 if (!file_exists($tmpDir) || !is_dir($tmpDir) || !is_writable($tmpDir)) {

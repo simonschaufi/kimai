@@ -31,19 +31,15 @@
 
 require('basics.php');
 
-$dir_ext = '';
-// check if we are in an extension
-if (!$isCoreProcessor) {
-    $datasrc = 'config.ini';
-    $settings = parse_ini_file($datasrc);
-    $dir_ext = $settings['EXTENSION_DIR'];
-}
-
-// Zend_View (configuration)
 $view = new Zend_View();
+
+// check if we are in an extension
 if ($isCoreProcessor) {
     $view->setBasePath(WEBROOT . '/templates');
 } else {
+    $datasrc = "config.ini";
+    $settings = parse_ini_file($datasrc);
+    $dir_ext = $settings['EXTENSION_DIR'];
     $view->setBasePath(WEBROOT . '/extensions/' . $dir_ext . '/' . $dir_templates);
 }
 $view->addHelperPath(WEBROOT . '/templates/helpers', 'Zend_View_Helper');
@@ -66,7 +62,9 @@ if (isset($_REQUEST['axAction']) && !is_array($_REQUEST['axAction']) && $_REQUES
 $axValue = isset($_REQUEST['axValue']) ? strip_tags($_REQUEST['axValue']) : '';
 $id = isset($_REQUEST['id']) ? strip_tags($_REQUEST['id']) : null;
 
-// initialize currently displayed timeframe
+
+
+//  initialize currently displayed timeframe
 $timeframe = get_timeframe();
 $in = $timeframe[0];
 $out = $timeframe[1];

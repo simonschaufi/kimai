@@ -17,6 +17,13 @@
  * along with Kimai; If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Set up the application for the extension
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../../libraries/autoload.php';
+    (new Kimai_Extension_Application($classLoader))->run();
+});
+
+// Include Basics
 include '../../includes/basics.php';
 
 $database = Kimai_Registry::getDatabase();

@@ -17,9 +17,12 @@
  * along with Kimai; If not, see <http://www.gnu.org/licenses/>.
  */
 
-// =============================
-// = Smarty (initialize class) =
-// =============================
+// Set up the application for the backend
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../libraries/autoload.php';
+    (new Kimai_Backend_Application($classLoader))->run();
+});
+
 require_once '../includes/basics.php';
 
 $database = Kimai_Registry::getDatabase();
@@ -44,7 +47,7 @@ $user = checkUser();
 // der updater.php weiss dann welche Aenderungen an der Datenbank vorgenommen werden muessen.
 checkDBversion("..");
 
-$extensions = new Kimai_Extensions($kga, WEBROOT . '/extensions/');
+$extensions = new Kimai_Extensions($kga, WEBROOT . 'extensions/');
 $extensions->loadConfigurations();
 
 // ============================================
@@ -59,12 +62,12 @@ $out = $timeframe[1];
 // ===============================================
 $current_timer = array();
 if (isset($kga['customer'])) {
-  $current_timer['all']  = 0;
-  $current_timer['hour'] = 0;
-  $current_timer['min']  = 0;
-  $current_timer['sec']  = 0;
+    $current_timer['all'] = 0;
+    $current_timer['hour'] = 0;
+    $current_timer['min'] = 0;
+    $current_timer['sec'] = 0;
 } else {
-  $current_timer = $database->get_current_timer();
+    $current_timer = $database->get_current_timer();
 }
 
 // =======================================
@@ -205,7 +208,7 @@ $view->assign('activityData', $activityData);
 // = INCLUDE EXTENSION PHP FILE            =
 // =========================================
 foreach ($extensions->phpIncludeFiles() as $includeFile) {
-  require_once $includeFile;
+    require_once $includeFile;
 }
 
 // =======================

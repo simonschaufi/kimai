@@ -48,6 +48,7 @@ class Zend_View_Helper_Translate extends Zend_View_Helper_Abstract
         }
 
         if (!isset($this->view->kga['lang'][$key])) {
+            Kimai_Logger::logfile('TODO: translate "' . $key . '" into "' . $this->view->kga->getLanguage() . '"');
             return '*' . $key . '*';
         }
 

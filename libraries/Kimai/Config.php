@@ -85,7 +85,6 @@ class Kimai_Config extends Kimai_ArrayObject
             'date_format_1' => '%d.%m.',
             'date_format_2' => '%d.%m.%Y',
             'date_format_3' => 'd.m.Y',
-            'language' => self::getDefault(self::DEFAULT_LANGUAGE),
             'authenticator' => self::getDefault(self::DEFAULT_AUTHENTICATOR),
             'billable' => self::getDefault(self::DEFAULT_BILLABLE),
             'skin' => self::getDefault(self::DEFAULT_SKIN),
@@ -165,6 +164,7 @@ class Kimai_Config extends Kimai_ArrayObject
     public function getLanguage($system = false)
     {
         if (!$system) {
+            // get user settings
             $language = $this->getSettings()->getLanguage();
             if (!empty($language)) {
                 return $language;

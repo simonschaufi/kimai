@@ -1,10 +1,10 @@
 <?php echo $this->translate('DBname'); ?>:
-<?php echo $this->escape($this->kga['server_database']);?>
+<?php echo $this->escape($GLOBALS['KIMAI_CONF_VARS']['DB']['database']);?>
 
 <br /><br />
 
 <?php echo $this->translate('DButf8');?>:
-<?php if ($this->kga['server_charset'] === 'utf8') {
+<?php if ($GLOBALS['KIMAI_CONF_VARS']['DB']['charset'] === 'utf8') {
     echo $this->translate('yes');
 } else {
     echo $this->translate('no');

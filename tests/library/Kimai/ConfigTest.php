@@ -37,10 +37,6 @@ class ConfigTest extends TestCase
         $authClass = 'Kimai_Auth_' . ucfirst($auth);
         $this->assertTrue(class_exists($authClass));
 
-        $language = Kimai_Config::getDefault(Kimai_Config::DEFAULT_LANGUAGE);
-        $this->assertNotNull($language);
-        $this->assertTrue(file_exists(APPLICATION_PATH . 'language/' . $language . '.php'));
-
         $skin = Kimai_Config::getDefault(Kimai_Config::DEFAULT_SKIN);
         $this->assertNotNull($skin);
         $skinDir = APPLICATION_PATH . 'skins/' . $skin . '/';

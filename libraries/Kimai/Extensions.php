@@ -65,7 +65,7 @@ class Kimai_Extensions
             }
 
             // make path absolute
-            $dir = $this->extensionsDir . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR;
+            $dir = $this->extensionsDir . $dir . DIRECTORY_SEPARATOR;
 
             if (file_exists($dir . 'kimai_include.php')) {
                 $this->addValue($this->extensionsDir . $dir . 'kimai_include.php', $php_include_files);

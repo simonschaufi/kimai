@@ -24,6 +24,14 @@
 defined('WEBROOT') || define('WEBROOT', dirname(dirname(__FILE__)));
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../'));
 
+#ini_set('display_errors', '1');
+
+// Set up the application for the installer
+call_user_func(function () {
+    $classLoader = require __DIR__ . '/../libraries/autoload.php';
+    (new Kimai_Installer_Application($classLoader))->run();
+});
+
 require_once WEBROOT . '/libraries/autoload.php';
 
 // from php documentation at http://www.php.net/manual/de/function.ini-get.php
@@ -65,7 +73,7 @@ function getpass()
 
 $axAction = strip_tags($_REQUEST['axAction']);
 
-$javascript = "";
+$javascript = '';
 $errors = 0;
 
 switch ($axAction) {
@@ -138,6 +146,9 @@ switch ($axAction) {
             $javascript .= "$('span.ch_correctit').fadeIn(500);";
         } else {
             $javascript = "$('#installsteps button.cp-button').hide();$('#installsteps button.proceed').show();";
+
+            $configurationManager = new Kimai_Config_ConfigurationManager();
+            $configurationManager->createLocalConfigurationFromFactoryConfiguration();
         }
 
         echo $javascript;
@@ -148,30 +159,58 @@ switch ($axAction) {
      */
     case "write_config":
         include "../includes/func.php";
-        // special characters " and $ are escaped
-        $database = $_REQUEST['database'];
-        $hostname = $_REQUEST['hostname'];
-        $username = $_REQUEST['username'];
-        $password = $_REQUEST['password'];
-        $charset = 'utf8';
-        $prefix = addcslashes($_REQUEST['prefix'], '"$');
+
+        $defaultConnectionSettings = array();
+
+        if (isset($_REQUEST['username'])) {
+            $value = $_REQUEST['username'];
+            if (strlen($value) <= 50) {
+                $defaultConnectionSettings['user'] = $value;
+            }
+        }
+        if (isset($_REQUEST['password'])) {
+            $value = $_REQUEST['password'];
+            if (strlen($value) <= 50) {
+                $defaultConnectionSettings['password'] = $value;
+            }
+        }
+        if (isset($_REQUEST['hostname'])) {
+            $value = $_REQUEST['hostname'];
+            if (preg_match('/^[a-zA-Z0-9_\\.-]+(:.+)?$/', $value) && strlen($value) <= 255) {
+                $defaultConnectionSettings['host'] = $value;
+            }
+        }
+        if (isset($_REQUEST['database'])) {
+            $value = $_REQUEST['database'];
+            if (strlen($value) <= 50) {
+                $defaultConnectionSettings['database'] = $value;
+            }
+        }
+        if (isset($_REQUEST['prefix'])) {
+            $value = $_REQUEST['prefix'];
+            if (strlen($value) <= 50) {
+                $defaultConnectionSettings['prefix'] = $value;
+            }
+        }
+        if (isset($_REQUEST['timezone'])) {
+            $value = $_REQUEST['timezone'];
+            if (strlen($value) <= 50) {
+                $defaultConnectionSettings['timezone'] = $value;
+            }
+        }
+
         $lang = $_REQUEST['lang'];
         $salt = createPassword(20);
-        $timezone = $_REQUEST['timezone'];
 
-        $kimaiConfig = new Kimai_Config(array(
-            'server_prefix' => $prefix,
-            'server_hostname' => $hostname,
-            'server_database' => $database,
-            'server_username' => $username,
-            'server_password' => $password,
-            'server_charset' => $charset,
-            'defaultTimezone' => $timezone,
-            'password_salt' => $salt
-        ));
-        Kimai_Registry::setConfig($kimaiConfig);
-
-        write_config_file($database, $hostname, $username, $password, $charset, $prefix, $lang, $salt, $timezone);
+        $localConfigurationPathValuePairs = array();
+        foreach ($defaultConnectionSettings as $settingsName => $value) {
+            $localConfigurationPathValuePairs['DB/' . $settingsName] = $value;
+        }
+        $configurationManager = new Kimai_Config_ConfigurationManager();
+        // Remove full default connection array
+        $configurationManager->removeLocalConfigurationKeysByPath(array('DB'));
+        // Write new values
+        $configurationManager->setLocalConfigurationValuesByPathValuePairs($localConfigurationPathValuePairs);
 
         break;
 

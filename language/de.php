@@ -113,6 +113,8 @@ return [
     "company" => "Firma",
 
     "vat" => "Umsatzsteuer",
+    'invoiceNumberFormat' => 'Rechnungsnummerformat',
+    'format' => 'Format',
     "contactPerson" => "Ansprechpartner",
 
     "street" => "Straße",
@@ -474,6 +476,7 @@ Wählen Sie ein anderes Tabellenpräfix oder löschen Sie die existierenden Tabe
         'noData' => 'Für die ausgewählte Zeitspanne existieren keine Einträge',
         'noProject' => 'Fehlende Projektauswahl',
         'defaultVat' => 'Mehrwertsteuer',
+        'invoiceNumberFormat'   => 'Rechnungsnummerformat',
         'includedEntries' => 'Einträge einbeziehen',
         'failure' => 'Fehler beim Rendern der Rechnung: %s',
         'sortOrder' => 'Reihenfolge',

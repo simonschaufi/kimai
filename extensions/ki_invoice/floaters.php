@@ -28,4 +28,10 @@ switch ($axAction) {
         }
         echo $view->render("floaters/editVat.php");
         break;
+
+	case "editInvoiceNumberFormat":
+		$view->assign('kga', $kga);
+
+		echo $view->render("floaters/editInvoiceNumberFormat.php");
+		break;
 }

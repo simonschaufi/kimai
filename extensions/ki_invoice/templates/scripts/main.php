@@ -50,6 +50,11 @@
                     <input type="checkbox" id="short_invoice" name="short">
                 </div>
                 <div>
+                    <label><?php echo $this->translate('ext_invoice:invoiceNumberFormat') ?></label>
+                    <span id="defaultInvoiceNumberFormat"><?php echo $this->escape($this->kga['conf']['invoiceNumberFormat']); ?></span>
+                    (<a id="editInvoiceNumberFormatLink" href="#"><?php echo $this->kga['lang']['change']?></a>)
+                </div>
+                <div>
                     <label for="invoice_round_ID"><?php echo $this->translate('ext_invoice:invoiceOptionRound') ?></label>
                     <?php echo $this->formSelect('roundValue', null, [
                         'id' => 'invoice_round_ID',
@@ -91,6 +96,11 @@
             floaterShow(invoice_extension_path + 'floaters.php', 'editVat', 0, 0, 250, function () {
                 $('#vat').focus();
             });
+            return false;
+        });
+        $('#editInvoiceNumberFormatLink').click(function () {
+            this.blur();
+            floaterShow(invoice_extension_path + 'floaters.php', 'editInvoiceNumberFormat', 0, 0, 250);
             return false;
         });
         $('#invoice_customerID').change(function () {

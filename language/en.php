@@ -116,6 +116,8 @@ return [
     "company" => "Company",
 
     "vat" => "VAT",
+    'invoiceNumberFormat' => 'Invoice number format',
+    'format' => 'Format',
     "contactPerson" => "Contact person",
 
     "street" => "Street",
@@ -472,6 +474,7 @@ Choose another table prefix or delete existing tables with this prefix in order 
         'invoiceTimePeriod' => 'Time Period',
         'invoiceTemplate' => 'Invoice template',
         'defaultVat' => 'VAT rate',
+        'invoiceNumberFormat'   => 'Invoice number format',
         'invoiceOptionShort' => 'Short Invoice',
         'invoiceOptionRound' => 'Round time',
         'markEntriesAsCleared' => 'Mark entries as cleared',

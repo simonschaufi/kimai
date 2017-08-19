@@ -63,4 +63,13 @@ switch ($axAction) {
         header("Content-Type: application/json");
         echo json_encode($js_projects);
         break;
+    break;
+
+	// ================================
+	// = Change the invoice no format =
+	// ================================
+	case 'editInvoiceNumberFormat':
+		$result = $database->configuration_edit(array('invoiceNumberFormat' => $_POST['invoiceNumberFormat']));
+        echo ($result === true) ? "1" : "0";
+		break;
 }

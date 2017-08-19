@@ -1187,6 +1187,19 @@ if ((int)$revisionDB < 1394) {
 // release of kimai 1.3.0
 // release of kimai 1.3.1
 
+if ((int)$revisionDB < 1395) {
+    Kimai_Logger::logfile("-- update to r1394");
+    exec_query("INSERT INTO ${p}configuration (`option`,`value`) VALUES ('invoiceNumberFormat', '%Y/%m/#')");
+    exec_query("CREATE TABLE `${p}invoice` (
+		`invoiceID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		`customerID` int(10) DEFAULT NULL,
+		`projectID` int(10) DEFAULT NULL,
+		`vat` int(10) DEFAULT NULL,
+		`total` decimal(10,2) NOT NULL,
+		`gtotal` decimal(10,2) NOT NULL
+	)");
+}
+
 // ================================================================================
 // FINALIZATION: update DB version number
 // ================================================================================

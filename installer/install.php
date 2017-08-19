@@ -271,6 +271,15 @@ $query = "CREATE TABLE `${p}statuses` (
 ) ENGINE = InnoDB";
 exec_query($query);
 
+exec_query("CREATE TABLE `${p}invoice` (
+    `invoiceID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `customerID` int(10) DEFAULT NULL,
+    `projectID` int(10) DEFAULT NULL,
+    `vat` int(10) DEFAULT NULL,
+    `total` decimal(10,2) NOT NULL,
+    `gtotal` decimal(10,2) NOT NULL
+)");
+
 // The included script only sets up the initial permissions.
 // Permissions that were later added follow below.
 require("installPermissions.php");

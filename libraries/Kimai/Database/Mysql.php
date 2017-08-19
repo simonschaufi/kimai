@@ -5307,6 +5307,33 @@ class Kimai_Database_Mysql
         return $rows;
     }
 
+    /**
+     * Adds a new invoice
+     *
+     * @param array $data  data of the new invoice
+     * @return boolean|integer     false on failure, otherwise the new invoice id
+     * @author th
+     */
+    public function invoice_create($data) {
+        $data = $this->clean_data($data);
+
+        $values['customerID'] = MySQL::SQLValue($data['customerID'], MySQL::SQLVALUE_NUMBER);
+        $values['projectID'] = MySQL::SQLValue($data['projectID'], MySQL::SQLVALUE_NUMBER);
+        $values['vat'] = MySQL::SQLValue($data['vat'], MySQL::SQLVALUE_NUMBER);
+        $values['total'] = MySQL::SQLValue($data['total'], MySQL::SQLVALUE_NUMBER);
+        $values['gtotal'] = MySQL::SQLValue($data['gtotal'], MySQL::SQLVALUE_NUMBER);
+
+        $table = $this->kga['server_prefix'] . 'invoice';
+        $result = $this->conn->InsertRow($table, $values);
+
+        if (!$result) {
+            $this->logLastError('invoice_create');
+            return false;
+        } else {
+            return $this->conn->GetLastInsertID();
+        }
+    }
+
 
     /**
      * checks if a given db row based on the $idColumn & $id exists

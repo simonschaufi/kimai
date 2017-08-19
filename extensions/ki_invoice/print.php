@@ -61,11 +61,11 @@ $projectObjects = [];
 foreach ($_REQUEST['projectID'] as $projectID) {
     $projectObjects[] = $database->project_get_data($projectID);
 }
-$customer = $database->customer_get_data($projectObjects[0]['customerID']);
+$customer = $database->customer_get_data($_POST['customerID']);
 $customerName = html_entity_decode($customer['name']);
 $beginDate = $in;
 $endDate = $out;
-$invoiceID = $customer['name'] . "-" . date("y", $in) . "-" . date("m", $in);
+$invoiceID = $customer['name'] . "-" . date("y", $in) . "-" . date("m", $in); // deprecated!
 $today = time();
 $dueDate = mktime(0, 0, 0, date("m") + 1, date("d"), date("Y"));
 
@@ -128,6 +128,17 @@ if (!is_numeric($vat_rate)) {
 
 $vat = $vat_rate * $total / 100;
 $gtotal = $total + $vat;
+
+// save invoice in database
+$invoiceData = array(
+    'customerID' => $customer['customerID'],
+    #'projectID' => $projectID, // FIXME: can be an array: rethink how to store it
+    'vat' => $vat_rate,
+    'total' => $total,
+    'gtotal' => $gtotal
+);
+$newInvoiceID = $database->invoice_create($invoiceData);
+$invoiceNumber = strftime(str_replace('#', $newInvoiceID, $kga['conf']['invoiceNumberFormat']));
 
 $baseFolder = dirname(__FILE__) . "/invoices/";
 $tplFilename = $_REQUEST['ivform_file'];
